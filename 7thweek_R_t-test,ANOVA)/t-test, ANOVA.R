@@ -7,7 +7,7 @@
 ##----Set the working directory------
 
 getwd()
-setwd("//Users/sweethome/Onedrive/OneDrive - SNU/SNU/[2021-2] Vocational Education Statistics/Presentation/7thweek_R_t-test,ANOVA)")
+setwd("//Users/sweethome/Onedrive/OneDrive - SNU/R/R/7thweek_R_t-test,ANOVA)")
 
 
 ##----이전작업 객체 지우기--------
@@ -23,6 +23,7 @@ install.packages("ggplot2")
 install.packages("pastecs")
 install.packages("Hmisc")
 install.packages("reshape")
+install.packages("rtools")
 #ggplot2: 그림을 그리는 과정을 절차에 따른 요소(components)로 나누어서 각 요소를 차례대로 그림판에 추가하는 형식
 #pastecs: 기술통계, stat.desc()함수를 포함, 측정단위 효과를 없애준다. 변동계수가 필요할 때 좋음
 #Hmisc: 전체 변수 대상 기술통계량 제공(평균, 중위수, 분산, 표준편차 등 분위수에 따른 분석에 좋음)
@@ -68,7 +69,7 @@ by(spiderLong$Anxiety, spiderLong$Group, stat.desc, basic=FALSE, norm=TRUE)
 
 ##--------ggplot을 통해 Error Bar Chart 그리기--------------
 spiderLongBar <- ggplot(spiderLong, aes(Group, Anxiety))
-spiderLongBar + stat_summary(fun.y = mean, geom = "bar", fill = "White", colour = "Black") + stat_summary(fun.data = mean_cl_normal, geom = "pointrange") + labs(x = "group", y = "anxiety")
+spiderLongBar + stat_summary(fun = mean, geom = "bar", fill = "White", colour = "Black") + stat_summary(fun.data = mean_cl_normal, geom = "pointrange") + labs(x = "group", y = "anxiety")
 #stat_summary(fun.y = mean, geom = "bar", fill = "White", colour = "Black"): 평균값을 계산하고, 막대형태로, 내부는 흰색으로, 테두리는 검은색으로 표시
 #stat_summary(fun.data = mean_cl_normal, geom = "pointrange"): 표준95% 신뢰구간을 점 범위(pointtange) 기하 객체로 표시한 계층을 그래프에 추가
 #labs(x = "group", y = "anxiety"): 그래프에 적절한 이름표를 추가
@@ -86,7 +87,7 @@ ind.t.test
 #paired=TRUE이면 종속t검정, FALSE를 지정하거나 이 옵션을 생략하면 독립t검정
 
 ##--------wide dataframe-----------
-ind.t.test<-t.test(spiderWide$real, spiderWide$picture, paired=FALSE)
+ind.t.test <- t.test(spiderWide$real, spiderWide$picture, paired=FALSE)
 ind.t.test
 #두 그룹의 자료가 다른 두 열에 들어 있을 때 사용
 #예시(new모형 <-t.test(점수그룹1, 점수그룹2, paired=FALSE 또는 TRUE))
@@ -198,6 +199,7 @@ libido<-c(3,2,1,1,4,5,2,4,2,3,7,4,5,3,6)
 dose<-gl(3,5, labels = c("Placebo", "Low Dose", "High Dose"))
 #gl()함수: 요인(factor)을 쉽게 정의할 수 있는 함수, gl(요인 수, 요인 별 반복 수, 전체 수, 요인 이름)
 viagraData<-data.frame(dose, libido)
+str(viagraData)
 
 
 ##--------Graph 그리기-------------
@@ -223,4 +225,4 @@ viagraModel
 
 summary(viagraModel)
 summary.lm(viagraModel)
-plot(viagraModel)
+

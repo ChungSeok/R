@@ -1,3 +1,8 @@
-#´Ù½Ã ¸¸µç ÇÁ·ÎÁ§Æ® ÆÄÀÏ¸í R.Rproj
-ddd
+##?Ù½? ???? ?ï¿½ï¿½?ï¿½ï¿½Æ® ???Ï¸? R.Rproj
+Sys.getlocale()
+Sys.setlocale("LC_ALL","C") #??ï¿½ï¿½??????ï¿½ï¿½
 
+## spss ÆÄÀÏ ºÒ·¯¿À±â
+library(haven)
+pmi <- read_sav("CMEA/pmi.sav")
+View(pmi)
