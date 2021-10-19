@@ -17,12 +17,14 @@ library(boot)
 ######### 다중회귀분석(Multiple Regression) ###########
 #######################################################
 
-album2<-read.delim("Album Sales 2.dat", header = TRUE)
+album2<-read.delim("6thweekMultiple Regression_Script/Album Sales 2.dat", header = TRUE)
                          
 albumSales.2<-lm(sales ~ adverts, data = album2)
+summary(albumSales.2)
 ## 광고 횟수 - 매출 간 단순회귀분석
 
 albumSales.3<-lm(sales ~ adverts + airplay + attract, data = album2)
+summary(albumSales.3)
 ## 독립변수 추가시 '+'로 진행
 
 summary(albumSales.2)
@@ -131,11 +133,3 @@ summary(albumSales_dummy)
 ## 광고비용이 1000 이상인 경우 추정되는 판매량은 271.75개.
 ## 광고비용이 500이상 1000미만인 경우의 추정 판매량은 1000이상인 경우보다 71.17이 낮은 200.58개.
 ## 광고비용이 500미만인 경우의 추정 판매량은 1000이상인 경우보다 118.67이 낮은 153.08개임을 추정할 수 있음.
-
-
-
-
-
-
-
-
