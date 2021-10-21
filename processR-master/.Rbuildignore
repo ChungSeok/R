@@ -1,0 +1,5 @@
+^CRAN-RELEASE$
+^.*\.Rproj$
+^\.Rproj\.user$
+^figure$
+cran-comments.md
