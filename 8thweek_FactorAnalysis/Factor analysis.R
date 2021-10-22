@@ -3,10 +3,11 @@
 #---------------------------------------------------------------------------------------------------------
 
 #----사용할 폴더 루트 설정하기------
-setwd("F:/Users/song he/Desktop/R")
+setwd("/Users/sweethome/Onedrive/OneDrive - SNU/R/R/8thweek_FactorAnalysis")
 
 # 어떤 데이터인지 설명
 factorData<-read.delim("raq.dat", header = TRUE)
+str(factorData)
 
 #해당 데이터는 "R불안 설문지"에 관련된 응답 데이터임.
 #개인이 R 사용법 학습에 관해 얼마나 불안해하는가?를 예측하기 위함임
@@ -25,6 +26,7 @@ library(psych)
 #상관행렬 구하기 / 요인들을 묶기 위해서는 요인 간에 어떤 상관관계가 있는지 파악해야 함
 #변인 간 상관이 0.3보다 큰지, 그리고 변인간 상관이 0.9보다 큰 것은 없는지 파악해야 함
 factorMatrix<-cor(factorData)
+view.factorMatrix
 
 #소수점 셋째자리까지 반올림하기
 round(factorMatrix, 3)
@@ -39,7 +41,7 @@ round(factorMatrix[,17:23], 3)
 #이 검정의 결과가 유의하다는 것은 R 행렬이 단위행렬이 아니라는 것이고 변수들 간의 일정한 관계가 존재함.
 cortest.bartlett(factorData)
 
-# R was not square, finding R from data
+# R was not square, finding R from data = 아래와 같이 써주면 에러메시지 안나옴
 
 cortest.bartlett(factorMatrix, n = 2571)
 
@@ -64,7 +66,7 @@ det(factorMatrix)
 pc1 <-  principal(factorData, nfactors = 23, rotate = "none")
 pc1 <-  principal(factorData, nfactors = length(factorData), rotate = "none")
 pc1
-##커뮤넬리티가 모두 1인 것 확인할 수 있음
+##커뮤넬리티가 모두 1인 것 확인할 수 있음 --> 23개의 변수들이 공통적으로 설명해주고 있다
 #com은 호프만 지수로 1이면 해당 문항이 요인 하나에, 2이면 해당 문항이 요인 두 개에 공통적으로 부하되어 있다는 뜻임
 # SS loadings는 각 요인의 고유값(아이겐값)임
 # Proporation Var는 인자의 개수를 나눈 것임
@@ -99,7 +101,7 @@ factor.residuals(factorMatrix, pc2$loadings)
 resids<-round(factor.residuals(factorMatrix, pc2$loadings), 3) #보기 편하게 바꾸기
 resids[,1:9] #확인하기
 
-pc2$fit.off
+pc2$fit.off  # 1에 가까울 수록 양호한 모형
 
 residuals<-factor.residuals(factorMatrix, pc2$loadings)
 residuals<-as.matrix(residuals[upper.tri(residuals)]) # 대각산 위 삼각형만 남김
@@ -171,12 +173,24 @@ res.pca <- prcomp(factorData, scale = TRUE)
 #요인별로 설명하는 아이겐값 (Propertion Explained 값과 같음)
 fviz_eig(res.pca)
 
-#개인별 데이터 시각화
+#손대고 있는 데이터
 fviz_pca_ind(res.pca,
              col.ind = "cos2", # Color by the quality of representation
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             invisible = "geom",
+             geom = "point",
              repel = TRUE     # Avoid text overlapping
-)
+) + labs(title = "", x = "", y = "")
+
+#개인별 데이터 시각화
+fviz_pca_ind(res.pca, aes(x=x, y=y),
+             col.ind = "cos2", # Color by the quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             invisible = "geom",
+             geom = "point",
+             repel = TRUE     # Avoid text overlapping
+) + labs(title = "", x = "", y = "")
+  
 
 #변인에 대한 데이터 시각화
 fviz_pca_var(res.pca,
