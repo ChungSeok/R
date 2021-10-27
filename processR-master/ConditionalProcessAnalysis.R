@@ -31,6 +31,8 @@ install.packages("rlang", dependencies = TRUE, INSTALL_opts = "--no-lock")
     # https://cran.r-project.org/web/packages/lavaan/index.html
 install.packages("lavaan", dependencies = TRUE)
 
+# ggplot2 : 시각화 패키지
+install.packages("ggplot2")
 
     # predict3d, processR : 저자가 개발한 매개, 조절, 조건부과정분석 패키지
 devtools::install_github("cardiomoon/predict3d", force = TRUE)
