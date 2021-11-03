@@ -81,6 +81,7 @@ statisticalDiagram(0,radx=0.06,covar=list(name="c",site=list("Y")),ylim=c(0.1,0.
 
 
 # 2.2 상호작용이 있는 다중회귀모형 -----------------------------------------------------
+# 종속변수 1개, 독립변수 2개(비율척도1, 더미변수1)
 
 fit2 = lm(mpg ~ wt*vs,data=mtcars)
 fit2
@@ -89,3 +90,15 @@ summary(fit2)
 ggPredict(fit2)
 
 predict3d(fit2)
+
+
+# 종속변수 1개, 독립변수 2개(비율척도 2개)
+fit3 = lm(mpg ~ wt*hp, data = mtcars)
+fit3
+summary(fit3)
+
+# 이 모형에서 wt를 종속변수로, hqqqqqqqqqqqp를 조절변수로 생각하고, hp에 따른 wt와 mpg 사이의 회귀선의 기울기와 y절편을 생각해보자
+# 우선 hp의 평균과 평균 +- 표준편차 계산
+mean(mtcars$hp, na.rm=TRUE) + c(-1,0,1) * sd(mtcars$hp, na.rm = TRUE)
+# hp의 평균은 146.69, 표준편차는 68.56
+

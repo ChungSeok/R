@@ -27,12 +27,13 @@ install.packages(c("tidyverse","stringr"))
     # rlang : R 및 Tidyverse 패키지 활용을 위한 기반 패키지
 install.packages("rlang", dependencies = TRUE, INSTALL_opts = "--no-lock")
 
+# install.packages("remotes")
+remotes::install_github("r-lib/rlang")
+
     # lavaan : 확인적 요인분석, 구조방정식, 잠재성장모형 등 고급통계를 쉬운 문법으로 구동시킬 수 있는 패키지
     # https://cran.r-project.org/web/packages/lavaan/index.html
 install.packages("lavaan", dependencies = TRUE)
 
-# ggplot2 : 시각화 패키지
-install.packages("ggplot2")
 
     # predict3d, processR : 저자가 개발한 매개, 조절, 조건부과정분석 패키지
 devtools::install_github("cardiomoon/predict3d", force = TRUE)
@@ -44,9 +45,6 @@ devtools::install_github("cardiomoon/processR", force = TRUE)
     # library 함수는 설치되어있지 않은 패키지를 불러오는 경우에 오류값을 반환
     # require 함수는 설치되어있지 않은 패키지를 불러오는 경우에 경고메시지를 보여줌
 
+remove.packages("rgl")
+
 require(processR)
-require(predict3d)
-library(ggplot2)
-library(lavaan)
-
-
