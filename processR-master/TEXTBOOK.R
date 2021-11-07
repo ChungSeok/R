@@ -80,7 +80,7 @@ pmacroModel(0,covar=list(name="C",site=list("Y")))
 statisticalDiagram(0,radx=0.06,covar=list(name="c",site=list("Y")),ylim=c(0.1,0.6))
 
 
-# 2.2 상호작용이 있는 다중회귀모형 (1) -----------------------------------------------------
+# 2.2 상호작용이 있는 다중회귀모형 -----------------------------------------------------
 # 종속변수 1개, 독립변수 2개(비율척도1, 더미변수1)
 
 fit2 = lm(mpg ~ wt*vs,data=mtcars)
@@ -97,9 +97,43 @@ fit3 = lm(mpg ~ wt*hp, data = mtcars)
 fit3
 summary(fit3)
 
-# 이 모형에서 wt를 종속변수로, hp를 조절변수로 생각하고, hp에 따른 wt와 mpg 사이의 회귀선의 기울기와 y절편을 생각해보자
-# 우선 hp의 평균과 평균 +-1 표준편차 계산
+# 이 모형에서 wt를 종속변수로, hqqqqqqqqqqqp를 조절변수로 생각하고, hp에 따른 wt와 mpg 사이의 회귀선의 기울기와 y절편을 생각해보자
+# 우선 hp의 평균과 평균 +- 표준편차 계산
 mean(mtcars$hp, na.rm=TRUE) + c(-1,0,1) * sd(mtcars$hp, na.rm = TRUE)
 # hp의 평균은 146.69, 표준편차는 68.56
 
-ggPredict(fit3)
+ggPredict(fit3) # 그래프로 표현하면
+
+ggPredict(fit3,mode=3,colorn=50,show.text = FALSE) #회귀선을 50개로
+
+predict3d(fit3,show.error=TRUE) # 3차원 그래프로
+
+
+# 2.3.1 상호작용이 있는 다중회귀분석(조절효과)의 개념적 모형과 통계적 모형 -----------------------------
+
+# 상호작용이 있는 다중회귀분석 = Hayes의 PROCESS Macro Model 1
+
+# 개념적 모형
+pmacroModel(1, radx = 0.1, rady=0.07)
+
+# 통계적 모형
+statisticalDiagram(no = 1, radx = 0.1, rady = 0.04)
+
+
+# 제3절 조절된 조절 moderated moderation -----------------------------------------
+
+# 독립변수가 3개이며, 모두 상호작용이 있는 모형 : 조절된 조절 Hayes PROCESS Macro Model 3
+
+fit4 = lm (mpg ~ wt*hp*vs, data=mtcars)
+fit4
+summary(fit4)
+
+ggPredict(fit4, show.point=FALSE)
+
+predict3d(fit4, radius = 5, overlay = TRUE)
+
+pmacroModel(3, radx = 0.1, rady = 0.07) # 개념적 모형
+
+statisticalDiagram(3, radx = 0.1, rady = 0.05)
+
+

@@ -2,8 +2,8 @@
 ##-------'작업 멘트'를 평가하는 방식에 관한 연구에서 mlogit으로 분석하기
 
 ##-------패키지 설치하기
-##다항 로지스틱 회귀분석 시 활용 패키지: mlogit / nnet_multinom
 ##mlogit으로 분석해보기기
+##다항 로지스틱 회귀분석 시 활용 패키지: mlogit / nnet_multinom
 install.packages("car")
 install.packages("mlogit")
 install.packages("nnet")
@@ -16,9 +16,10 @@ library(dfidx)
 
 ##-------디렉토리 설정하기
 getwd()
+setwd("/Users/sweethome/Onedrive/OneDrive - SNU/R/R/")
 
 ##-------데이터 불러오기
-chatData<-read.delim("Chat-Up Lines2.dat", header = TRUE)
+chatData<-read.delim("10thweek_LogitAnalysis/Chat-Up Lines2.dat", header = TRUE)
 
 ##-------데이터를 확인하기
 ##텍스트 문자열이 포함되어 있으므로 요인여부 확인하고, 필요 시 요인으로 변환하기

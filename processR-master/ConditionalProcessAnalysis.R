@@ -51,9 +51,64 @@ library(lavaan)
 
 
 # 3. 조건부과정분석의 기초 ----------------------------------------------------------
+#processR 패키지의 내장함수를 활용하여 모형 그림을 생성
+
+# 3.1 직접효과만 조절되는 모형 (PROCSS Macro Model 5) ------------------------
+
+labels = list(X="X",Y="Y",M="M") #독립변수X, 매개변수M, 종속변수Y
+moderator = list (name = "W", site = "c") # w가 조절하는 포지션 설정 : a(X→M), b(M→Y), c(X→Y)
+drawConcept(labels=labels, moderator=moderator) #개념적모형
+drawModel(labels=labels,moderator=moderator) #통계적모형
+
+pmacroModel(5)
+statisticalDiagram(5)
+
+# M = iM + aX + eM
+# Y = iY + c'1X + c'2W + c'3XW + bM + eY
+# Y = iY + (c'1 + c'3W) X + c'2W + bM + eY
 
 
-# 3.1 직접효과만 조절되는 모형의 이해 ---------------------------------------------------
+# 3.2 간접효과만 조절되는 모형 (PROCESS Macro Model 14) --------------------------
+
+labels = list(X="X",Y="Y",M="M") #독립변수X, 매개변수M, 종속변수Y
+moderator = list (name = "W", site = "b") # w가 조절하는 포지션 설정 : a(X→M), b(M→Y), c(X→Y)
+drawConcept(labels=labels, moderator=moderator) #개념적모형
+drawModel(labels=labels,moderator=moderator) #통계적모형
+
+# M = iM + aX + eM
+# Y = iY + c'X + b1M + b2W + b3MW + eY
+# Y = iY + c'X + (b1 + b3W)M + b2W + eY
+# 간접효과 ab = a(b1 + b3W) = ab1 + ab3W
 
 
+# 3.3 직접효과와 간접효과가 모두 조절되는 모형(PROCESS Macro Model 28) ----------------------
+labels = list(X="X",Y="Y",M="M") #독립변수X, 매개변수M, 종속변수Y
+moderator = list (name = c("W","Z"), site = list(c("a"), c("b","c")), arr.pos=list(c(0.5), c(0.4,0.7))) # W와 Z가 조절하는 위치 설정 : a(X→M), b(M→Y), c(X→Y) / arr.pos = 조절화살표의 위치(0~1)
+drawConcept(labels=labels, moderator=moderator, nodemode=2) #개념적모형
+drawModel(labels=labels,moderator=moderator,nodemode=5) #통계적모형
 
+# M = iM + a1X + a2W + a3XW + eM
+# Y = iY + c'1X + c'2Z + c'3XZ + b1M + b2MZ + eY
+# θX→M = (a1 + a3W)X
+# θM→Y = (b1 + b2Z)M
+# 간접효과 = θX→M * θM→Y = (a1 + a3W) * (b1 + b2Z) = a1b1 + a1b2Z + a3b1W + a3b2WZ
+
+
+# 3.4 병렬다중매개모형에서 특정간접효과가 조절되는 모형 (PROCESS Macro Mode 58.2) ----------------
+pmacroModel(58.2)
+statisticalDiagram(58.2)
+
+
+# 4. 사례연구 : 팀에서 감정을 숨기기 ---------------------------------------------------
+# 사용하는 데이터 = teams
+# Cole et al.(2008)은 자동차 부품회사의 80개 팀을 대상으로 4가지 변수 측정 | 직장, 특히 팀 내에서 업무를 함께할 경우에는 자신의 감정을 억누르는 것이 팀의 업무효율을 위해 긍정적인 효과를 나타내는가?
+# DYSFUNC (dysfunctional behavior, 역기능행동) : 팀구성원이 얼마나 자주 다른 사람들의 업무를 악화시키거나 변화와 혁신을 방해하는 행동을 하는지
+# NEGTONE (negative effect, 부정적 정서상태) : 업무수행 시 얼마나 자주 분노 또는 역겨움을 느끼는지 질문하여 측정
+# NEGEXP (nonverbal negative expressivity, 부정적 감정표현) : 팀 구성원들이 얼마나 쉽게 자신들의 비언어적 부정적 감정을 표현하는가에 대한 상사의 평가
+# PERFORM (team performance, 팀 성과) : 팀이 얼마나 효율적이고 시간내에 업무를 달성하는지에 대한 상사의 평가
+# DYSFUNC(X)이 NEGTONE(M)으로 가득한 환경을 만들고, PERFORM(Y)를 떨어뜨리는 매개효과 + NEGEXP(W)을 통해 본인의 감정을 숨김으로써 업무에 집중한다는 조절효과 : PROCESS Macro Model 14
+
+labels = list(X="DYSFUNC",M="NEGTONE",Y="PERFORM")
+moderator = list(name="NEGEXP",site=list("b"),pos=2)
+drawConcept(labels=labels,moderator=moderator,box.col='lightcyan')
+drawModel(labels=labels,moderator=moderator)
