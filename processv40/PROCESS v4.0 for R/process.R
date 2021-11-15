@@ -3,7 +3,7 @@
 # Written by Andrew F. Hayes
 # www.afhayes.com
 # www.processmacro.org
-# Copyright 2021 by Andrew F. Hayes ALL RIGHTS RESERVED
+# Copyright 2021 by Andrew F. Hayes ALL RIGHTS RESERVEaD
 # PROCESS workshop schedule at http://www.processmacro.org/workshops.html
 #
 # Distribution of this code in any form except through processmacro.org 
