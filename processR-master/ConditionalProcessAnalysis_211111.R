@@ -2,27 +2,12 @@ rm(list=ls())
 
 ##------------조건부 과정모형 실습--------------##
 
-# I. PROCESS Macro for R -----------------------------------------------
-# 1.  필요한 파일 다운로드 및 PROCESS 활성화 ---------------------------------------------------------
-    # http://processmacro.org/download.html
-    # Download PROCESS v4.0 클릭
-    # 파일 압축해제
-    # processv40 폴더
-    # PROCESS v4.0 for R 폴더
-    # process.R 파일을 Rstudio 파일에서 열기
-    # 전체 코드실행 (5,369행, 1~2분 소요)
-    # PROCESS 가동됨 (SPSS에서 syntax를 사용할 때 PROCESS.sps 파일을 여는것과 유사한 개념)
-
-# 2. PROCESS syntax 입력 -----------------------------------------------------------
-process (data = liking, y="respappr", x="protest", w="sexism", model=1, jn=1, plot=1)
-
-# II. processR -----------------------------------------------------
+# I. processR 설치 -------------------------------------------------------------
 # 참고문헌 : 문건웅. (2019). R을 이용한 조건부과정분석. 학지사.
 
-# 1. 필요한 패키지 설치 -----------------------------------------------------------
-
+# 1. 필요한 패키지 설치 --------------------------------------------------------
 install.packages("jsonlite", type = "source")
-# devtools : 개발자용 패키지, 여기에서는 깃헙에 있는 패키지를 설치 하는데 사용 | https://devtools.r-lib.org 상세정보 확인
+# devtools : 개발자용 패키지, 여기에서는 깃헙에 있는 패키지를 설치 하는데 사용 | https://devtools.r-lib.org
 install.packages("devtools")
 # tidyverse : 데이터분석에 필요한 패키지, stringr : 문자열을 쉽게 처리하도록 도와주는 함수세트 제공
 install.packages(c("tidyverse","stringr"))
@@ -40,55 +25,43 @@ devtools::install_github("cardiomoon/processR", force = TRUE)
 
 # 2. 패키지 실행 ---------------------------------------------------------------
 
-# 저자는 library 보다 require를 사용하여 패키지를 불러올 것을 권장하고 있음
-    # library 함수는 설치되어있지 않은 패키지를 불러오는 경우에 오류값을 반환
-    # require 함수는 설치되어있지 않은 패키지를 불러오는 경우에 경고메시지를 보여줌
+# 저자는 library 보다 require를 사용하여 자체개발 패키지를 불러올 것을 권장하고 있음
+# library 함수는 설치되어있지 않은 패키지를 불러오는 경우에 오류값을 반환
+# require 함수는 설치되어있지 않은 패키지를 불러오는 경우에 경고메시지를 보여줌
 
+options(rgl.useNULL=TRUE) # processR, predict3D 실행 시 error: OpenGL is not available in this build 메시지가 나오는 것을 막기 위함
+library(rgl)
 require(processR)
 require(predict3d)
 library(ggplot2)
 library(lavaan)
 
+# II. PROCESS Macro for R 설치 -------------------------------------------------
+# 필요한 파일 다운로드 및 PROCESS 활성화 ---------------------------------------
+    # http://processmacro.org/download.html
+    # Download PROCESS v4.0 클릭
+    # 파일 압축해제
+    # processv40 폴더
+    # PROCESS v4.0 for R 폴더
+    # process.R 파일을 Rstudio 파일에서 열기
+    # 전체 코드실행 (5,369행, 1~2분 소요)
+    # PROCESS 가동됨 (SPSS에서 syntax를 사용할 때 PROCESS.sps 파일을 여는것과 유사한 개념)
 
-# 3. 조건부과정분석의 기초 ----------------------------------------------------------
-#processR 패키지의 내장함수를 활용하여 모형 그림을 생성
+# III. 실습사례 : 직장 내 성차별 연구 ------------------------------------------
 
-# 3.1 직접효과만 조절되는 모형 (PROCSS Macro Model 5) ------------------------
+# 1. 데이터 불러오기 -----------------------------------------------------------
+getwd()
+setwd("/Users/sweethome/Onedrive/OneDrive - SNU/R/R/processv40/PROCESS v4.0 for R")
+Data <- read.csv("liking.csv", header = TRUE)
+str(Data)
+# 저의 경우 첫번째 column명이 癤퓋exism라고 나타나서 colnames를 이용해 컬럼명을 변경했습니다
+colnames(Data)[1] <- 'sexism'
+str(Data) # 5개 변수, 129개 관측치
 
-labels = list(X="X",Y="Y",M="M") #독립변수X, 매개변수M, 종속변수Y
-moderator = list (name = "W", site = "c") # w가 조절하는 포지션 설정 : a(X→M), b(M→Y), c(X→Y)
-drawConcept(labels=labels, moderator=moderator) #개념적모형
-drawModel(labels=labels,moderator=moderator) #통계적모형
-
-pmacroModel(5)
-statisticalDiagram(5)
-
-# M = iM + aX + eM
-# Y = iY + c'1X + c'2W + c'3XW + bM + eY
-# Y = iY + (c'1 + c'3W) X + c'2W + bM + eY
-
-
-# 3.2 간접효과만 조절되는 모형 (PROCESS Macro Model 14) --------------------------
-
-labels = list(X="X",Y="Y",M="M") #독립변수X, 매개변수M, 종속변수Y
-moderator = list (name = "W", site = "b") # w가 조절하는 포지션 설정 : a(X→M), b(M→Y), c(X→Y)
-drawConcept(labels=labels, moderator=moderator) #개념적모형
-drawModel(labels=labels,moderator=moderator) #통계적모형
-
-# M = iM + aX + eM
-# Y = iY + c'X + b1M + b2W + b3MW + eY
-# Y = iY + c'X + (b1 + b3W)M + b2W + eY
-# 간접효과 ab = a(b1 + b3W) = ab1 + ab3W
+# 2. PROCESS Macro Syntax 입력 ----------------------------------------------
+process (data = Data, y="liking", x="protest", m="respappr", w="sexism", model=8, plot=1, boot=10000, seed = )
 
 
-# 3.3 직접효과와 간접효과가 모두 조절되는 모형(PROCESS Macro Model 28) ----------------------
-labels = list(X="X",Y="Y",M="M") #독립변수X, 매개변수M, 종속변수Y
-moderator = list (name = c("W","Z"), site = list(c("a"), c("b","c")), arr.pos=list(c(0.5), c(0.4,0.7))) # W와 Z가 조절하는 위치 설정 : a(X→M), b(M→Y), c(X→Y) / arr.pos = 조절화살표의 위치(0~1)
-drawConcept(labels=labels, moderator=moderator, nodemode=2) #개념적모형
-drawModel(labels=labels,moderator=moderator,nodemode=5) #통계적모형
+# 3. PROCESS Macro 결과 해석 --------------------------------------------------
 
-# M = iM + a1X + a2W + a3XW + eM
-# Y = iY + c'1X + c'2Z + c'3XZ + b1M + b2MZ + eY
-# θX→M = (a1 + a3W)X
-# θM→Y = (b1 + b2Z)M
-# 간접효과 = θX→M * θM→Y = (a1 + a3W) * (b1 + b2Z) = a1b1 + a1b2Z + a3b1W + a3b2WZ
+
