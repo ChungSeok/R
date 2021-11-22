@@ -53,15 +53,42 @@ library(lavaan)
 getwd()
 setwd("/Users/sweethome/Onedrive/OneDrive - SNU/R/R/processv40/PROCESS v4.0 for R")
 Data <- read.csv("liking.csv", header = TRUE)
-str(Data)
-# 저의 경우 첫번째 column명이 癤퓋exism라고 나타나서 colnames를 이용해 컬럼명을 변경했습니다
-colnames(Data)[1] <- 'sexism'
-str(Data) # 5개 변수, 129개 관측치
-
-# 2. PROCESS Macro Syntax 입력 ----------------------------------------------
-process (data = Data, y="liking", x="protest", m="respappr", w="sexism", model=8, plot=1, boot=10000, seed = )
 
 
-# 3. PROCESS Macro 결과 해석 --------------------------------------------------
+# 2.  데이터 들여다보기 --------------------------------------------------------
+str(Data) # 구조확인 : 5개 변수, 129개 관측치
 
 
+# 3. 모형 시각화, 회귀계수 요약 ------------------------------------------------
+labels = list (X="protest", M="respappr", W="sexism", Y="liking") #변수지정
+pmacroModel(8,labels=labels) #8번 모델 개념적모형 시각화
+statisticalDiagram(8,labels=labels) #8번 모델 통계적모형 시각화
+
+#회귀계수 요약표
+moderator=list(name="sexism", site=list(c("a","c")))
+equation = tripleEquation(labels=labels,moderator=moderator,mode=1)
+cat(equation)
+fit = eq2fit(equation, data=Data)
+modelsSummaryTable(fit,labels=labels)
+
+#회귀계수를 이용한 통계적 모형
+drawModel(fit,labels=labels,whatLabel="est")
+
+# 4. PROCESS Macro Syntax 입력 ----------------------------------------------
+process (data = Data,
+         y="liking",
+         x="protest",
+         m="respappr",
+         w="sexism",
+         model = 8,
+         boot = 10000,
+         seed = 191217)
+
+# 5. PROCESS Macro 결과 해석 --------------------------------------------------
+
+# 6.  조건부 직접효과 및 간접효과의 시각화 ------------------------------------------------
+model = tripleEquation(labels=labels,moderator=moderator,rangemode=2,data=Data)
+cat(model)
+semfit = sem(model=model,data=Data,se="boot")
+
+conditionalEffectPlot(semfit,data=Data) + labs(x="Perceived Pervasiveness of Sex Discrimination(w)",y="Effect of Lawyer's Behavior on Liking")
